@@ -2,13 +2,13 @@ pipeline {
   agent any
 
   environment {
-   DOCKER_COMPOSE_FILE = "${WORKSPACE}/docker/docker-compose.yml"
+    DOCKER_COMPOSE_FILE = "${WORKSPACE}/docker/docker-compose.yml"
   }
 
   stages {
     stage('Clone Repo') {
       steps {
-        git credentialsId: 'github-creds', url: 'https://github.com/Seetharamj/Devops_Project-.git'
+        git branch: 'main', credentialsId: 'git-creds', url: 'https://github.com/Seetharamj/Devops_Project-.git'
       }
     }
 
@@ -30,13 +30,13 @@ pipeline {
       }
     }
 
-        stage('Deploy with Docker Compose') {
+    stage('Deploy with Docker Compose') {
       steps {
         sh "docker-compose -f $DOCKER_COMPOSE_FILE up -d"
-      
+      }
     }
   }
-}
+
   post {
     failure {
       echo "Build failed!"
