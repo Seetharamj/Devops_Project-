@@ -1,5 +1,10 @@
 pipeline {
   agent any
+
+  environment {
+    DOCKER_COMPOSE_FILE = "${WORKSPACE}/docker/docker-compose.yml"
+  }
+
   stages {
     stage('Clone Repo') {
       steps {
@@ -15,8 +20,17 @@ pipeline {
 
     stage('Deploy with Docker Compose') {
       steps {
-        sh 'docker-compose -f ./docker/docker-compose.yml up -d'
+        sh "docker-compose -f $DOCKER_COMPOSE_FILE up -d"
       }
+    }
+  }
+
+  post {
+    failure {
+      echo "Build failed!"
+    }
+    success {
+      echo "Deployment completed successfully!"
     }
   }
 }
