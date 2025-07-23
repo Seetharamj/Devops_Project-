@@ -1,0 +1,22 @@
+pipeline {
+  agent any
+  stages {
+    stage('Clone Repo') {
+      steps {
+        git 'https://github.com/your-org/devops-project.git'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t myapp-image ./docker'
+      }
+    }
+
+    stage('Deploy with Docker Compose') {
+      steps {
+        sh 'docker-compose -f ./docker/docker-compose.yml up -d'
+      }
+    }
+  }
+}
