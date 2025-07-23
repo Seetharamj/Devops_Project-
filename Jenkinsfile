@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     DOCKER_COMPOSE_FILE = "${WORKSPACE}/docker/docker-compose.yml"
+    AWS_REGION = "us-east-1"  // Optional: for AWS CLI/SDK if used
   }
 
   stages {
@@ -14,7 +15,10 @@ pipeline {
 
     stage('Terraform Init & Apply') {
       steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding',
+          credentialsId: 'aws-creds'
+        ]]) {
           sh '''
             cd terraform
             terraform init
@@ -39,10 +43,10 @@ pipeline {
 
   post {
     failure {
-      echo "Build failed!"
+      echo "❌ Build failed!"
     }
     success {
-      echo "Deployment completed successfully!"
+      echo "✅ Deployment completed successfully!"
     }
   }
 }
